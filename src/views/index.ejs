@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header class="main-header">
+        <div class="animated-logo" style="height: 50px; width: 50px; transform: scale(1);">
+            <div class="animated-logo-background fjoinp"></div>
+            <svg version="orangeOnYellow" class="AnimatedLogo__Wordmark-sc-1is1pya-2 relative text-white" fill="currentColor" viewBox="0 0 900 900">
+              <defs></defs>
+              <path d="M782.78 435.5a113.87 113.87 0 0 0-9.47-43.75C747 332.2 692.2 302.46 626.68 312.24a175.72 175.72 0 0 0-32.46 8.07c-3.67-4.73-8.88-6.74-16.81-6.76h-39.22a10.73 10.73 0 0 0-10 7.23c-5.6 15.42-55.3 151.91-71.26 194.3-2.79 7.43-14 31.37-41.05 26.74a21.73 21.73 0 0 1-14.62-10 20.15 20.15 0 0 1-2.58-16.26l.68-2.36c1.59-5.56 3.39-11.86 5.53-17.51l62.48-164.91a10.57 10.57 0 0 0-9.88-14.31c-19.89 0-40.54 0-46.21-.05-9.87-.38-17.34 5.1-20.66 14.52-9.39 26.71-18.92 52.83-28.32 77.64-5.21 13.75-10.11 28.23-14.44 41-5.69 16.86-11.59 34.3-18.33 50.92-4.34 10.72-10.16 22.82-20.4 31.36-13.59 11.31-30.35 15.34-51.22 12.38-8-1.13-14.77-5.7-19.73-13.19-5.06-7.65-7.17-16.85-6.47-28.11.86-13.36 5.25-26.29 10.06-39.45 10.71-29.41 32.5-87.76 49-130.77a10.56 10.56 0 0 0-9.85-14.35H238.44a24.18 24.18 0 0 0-14.11 4c-9.25 6.15-21.38 17.75-35.45 31.2C169.47 372 145.42 395 122 410.19a10.56 10.56 0 0 0-.29 17.55c2.6 1.81 5 1.77 9.31 1a6.62 6.62 0 0 0 1.08-.2c6.6-1.35 21.23-5.05 53.88-13.41-9.3 23.51-18.73 48.72-23.44 75.8-5.74 32.93 2.4 63.7 23.54 89 34 40.68 89.92 42.26 127.55 26.54 14.17-5.92 25.05-15.56 33.94-25.12 17.75 23.47 49.32 33.44 75.4 30.84l-7.06 19.07-2.77 7.48c-11.62 31.45-26.09 70.6-34 90.85-2.67 6.85-2 13.93 1.8 19.46s10.13 8.57 17.75 8.57l38.24-.29a10.47 10.47 0 0 0 10-7c6.21-17.31 15.44-42.92 24.74-68.75l9.3-25.79c10.11-28.08 19.1-53 22.88-63.63l9.15-25.6a118.05 118.05 0 0 0 13.18 13.1c31.85 26.84 68.92 37 110.18 30.15 35.24-5.84 65.5-20.38 89.94-43.24 38.86-36.33 57.87-80.43 56.48-131.07zm-78.54 13.34c-4.64 34.54-20.81 60.79-48.08 78-14.29 9-29.61 13.61-45.55 13.61h-.31c-25.16-.08-46.41-15.77-54.15-40a82 82 0 0 1-3-13.31c-.23-1.61-.32-3.25-.46-5.48l-.17-1.58a108.85 108.85 0 0 1 25.54-65.24c16.69-19.84 38.41-30.84 64.59-32.58 1.36-.09 2.72-.14 4.06-.14 22.12 0 40.69 12 50.94 33 5.78 11.79 8 23.14 6.59 33.72z"></path>
+            </svg>
+        </div>
+        <a href="/logout" class="logout-button">Logout</a>
+    </header>
+
+    <main>
+      <section class="accounts">
+        <h2>Accounts <button id="balance-toggle-btn" class="balance-toggle-btn">
+            <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6" style="display: none;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19.5c-4.638 0-8.573-3.007-9.963-7.178.07-.207.07-.431 0-.639C3.423 7.51 7.36 4.5 12 4.5c1.414 0 2.77.29 4.025.825m-4.025 11.95L21.75 21.75m-4.625-4.625L12 12m6.75 0l-3.625 3.625m-4.75-2.475L4.5 4.5M12 12l-1.5-1.5m-3 3l-3-3m-2.25 4.5l4.5-4.5" />
+            </svg>
+          </button>
+        </h2>
+        <div class="card-grid">
+          <% accounts.forEach((account, index) => { %>
+            <div class="card card-color-<%= (index % 5) + 1 %>" data-account-id="<%= account.id %>">
+              <div class="card-header">
+                <h3><%= account.attributes.displayName %></h3>
+              </div>
+              <div class="card-body">
+                <p class="balance"><span class="balance-amount blurred"><%= account.attributes.balance.value %></span> <span class="currency"><%= account.attributes.balance.currencyCode %></span></p>
+                <% if (account.attributes.accountType !== 'TRANSACTIONAL') { %>
+                  <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: <%= (parseFloat(account.attributes.balance.value) / 1000) * 100 %>%"></div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </section>
+
+      <section id="transactions-section" class="transactions" style="display: none;">
+        <h2 id="transactions-heading"></h2>
+        <div id="transaction-list" class="transaction-list"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <div id="transaction-details-panel" class="slide-out-panel">
+    <div id="panel-content" class="panel-content"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mainContent = document.querySelector('main');
+      const accountCards = document.querySelectorAll('.card[data-account-id]');
+      const transactionsSection = document.getElementById('transactions-section');
+      const transactionsHeading = document.getElementById('transactions-heading');
+      const transactionList = document.getElementById('transaction-list');
+      const transactionDetailsPanel = document.getElementById('transaction-details-panel');
+      const panelContent = document.getElementById('panel-content');
+
+      let transactionsData = [];
+
+      accountCards.forEach(card => {
+        card.addEventListener('click', async () => {
+
+          // Remove selected class from all cards
+          accountCards.forEach(c => c.classList.remove('selected'));
+
+          // Add selected class to clicked card
+          card.classList.add('selected');
+
+          const accountId = card.dataset.accountId;
+          const accountName = card.querySelector('h3').textContent;
+
+          // Fetch transactions
+          const response = await fetch(`/api/accounts/${accountId}/transactions`);
+          const { transactions } = await response.json();
+          transactionsData = transactions;
+
+          // Update heading
+          transactionsHeading.textContent = `Transactions for ${accountName}`;
+
+          // Clear previous transactions
+          transactionList.innerHTML = '';
+
+          // Group transactions by date
+          const groupedTransactions = transactions.reduce((groups, transaction) => {
+            const date = new Date(transaction.attributes.createdAt).toDateString();
+            if (!groups[date]) {
+              groups[date] = [];
+            }
+            groups[date].push(transaction);
+            return groups;
+          }, {});
+
+          // Populate transactions
+          if (Object.keys(groupedTransactions).length > 0) {
+            for (const date in groupedTransactions) {
+              const dateHeader = document.createElement('div');
+              dateHeader.classList.add('transaction-date-header');
+              dateHeader.textContent = date;
+              transactionList.appendChild(dateHeader);
+
+              groupedTransactions[date].forEach(transaction => {
+                const item = document.createElement('div');
+                item.classList.add('transaction-item');
+                item.dataset.transactionId = transaction.id;
+
+                const icon = document.createElement('div');
+                icon.classList.add('transaction-icon');
+                icon.innerHTML = `
+                  <svg class="mr-2" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.43359 24.204C13.064 24.2238 17.6894 24.2486 22.3198 24.2684C22.2553 20.7337 22.1958 16.6486 22.1314 13.1138C17.7191 13.0494 13.3019 12.98 8.88969 12.9156C8.74096 14.0112 8.6666 15.1118 8.68147 16.2173L8.43359 24.204Z" stroke="currentColor" strokeWidth="1.3" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path>
+                    <path d="M10.2672 12.8908C10.2672 11.4878 10.2176 9.89145 10.6737 8.63222C10.9514 7.86875 11.5165 7.22921 12.1808 6.75824C13.326 5.95015 14.7737 5.62296 16.1766 5.71716C16.8558 5.76177 17.54 5.9006 18.12 6.25258C18.9231 6.73347 19.4586 7.56634 19.761 8.44879C20.0634 9.33124 20.2419 10.2682 20.3311 11.2002C20.3906 11.7902 20.4203 12.2116 20.4203 12.8015" stroke="currentColor" strokeWidth="1.3" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path>
+                    <path d="M18.508 12.8114C18.508 11.7257 18.3642 10.878 18.0817 9.83192C17.9131 9.21222 17.6652 8.56278 17.1348 8.19096C16.8125 7.96291 16.4209 7.86376 16.0342 7.7894C15.3104 7.65554 14.5072 7.62084 13.8826 8.00753C13.4364 8.28516 13.02 8.67186 12.7919 9.13788C12.2069 10.3227 12.1524 11.5621 12.1821 12.9156" stroke="currentColor" strokeWidth="1.3" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path>
+                    <path d="M15.7259 16.6685C15.7904 18.1111 15.721 19.5637 15.5078 20.9915" stroke="currentColor" strokeWidth="1.3" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path>
+                  </svg>
+                `;
+
+                const details = document.createElement('div');
+                details.classList.add('transaction-details');
+
+                const description = document.createElement('p');
+                description.classList.add('transaction-description');
+                description.textContent = transaction.attributes.description;
+
+                const subtext = document.createElement('div');
+                subtext.classList.add('transaction-status');
+                subtext.textContent = `${new Date(transaction.attributes.createdAt).toLocaleTimeString()}${transaction.attributes.message ? ', ' + transaction.attributes.message : ''}`;
+
+                details.appendChild(description);
+                details.appendChild(subtext);
+
+                const amountDiv = document.createElement('div');
+                amountDiv.classList.add('transaction-amount');
+
+                const amount = document.createElement('p');
+                amount.classList.add('amount');
+                if (transaction.attributes.amount.value.startsWith('-')) {
+                  amount.classList.add('debit');
+                  amount.innerHTML = `$${transaction.attributes.amount.value.substring(1)}`;
+                } else {
+                  amount.classList.add('credit');
+                  amount.innerHTML = `+$${transaction.attributes.amount.value}`;
+                  amount.style.color = '#00bc83';
+                }
+
+                if (transaction.attributes.roundUp) {
+                    const roundUp = document.createElement('div');
+                    roundUp.classList.add('round-up');
+                    roundUp.innerHTML = `
+                        <svg title="Round up: ${transaction.attributes.roundUp.amount.value}" class="w-4 h-4 mr-2 mb-px" style="width: 0.85rem;" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M18 36C27.9409 36 36 27.9409 36 18C36 8.05908 27.9409 0 18 0C8.05908 0 0 8.05908 0 18C0 27.9409 8.05908 36 18 36ZM18 32C25.7319 32 32 25.7319 32 18C32 10.2681 25.7319 4 18 4C10.2681 4 4 10.2681 4 18C4 25.7319 10.2681 32 18 32Z" fill="#FF7A64"></path>
+                            <path d="M17.6536 7.1C17.8076 6.83333 18.1925 6.83333 18.3464 7.1L28.0459 23.9C28.1999 24.1667 28.0074 24.5 27.6995 24.5H8.30052C7.9926 24.5 7.80015 24.1667 7.95411 23.9L17.6536 7.1Z" fill="#FF7A64"></path>
+                        </svg>
+                    `;
+                    amountDiv.prepend(roundUp);
+                }
+
+                amountDiv.appendChild(amount);
+
+                item.appendChild(icon);
+                item.appendChild(details);
+                item.appendChild(amountDiv);
+
+                item.addEventListener('click', () => {
+                  const transactionId = item.dataset.transactionId;
+                  const transaction = transactionsData.find(t => t.id === transactionId);
+                  
+                  panelContent.innerHTML = `
+                    <div class="text-gray-900 bg-white rounded p-4 leading-tight grid gap-4">
+                      <div class="flex items-center pt-2">
+                        <div class="mr-0">
+                          <svg class="h-10 w-10 text-blue-600" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.43359 24.204C13.064 24.2238 17.6894 24.2486 22.3198 24.2684C22.2553 20.7337 22.1958 16.6486 22.1314 13.1138C17.7191 13.0494 13.3019 12.98 8.88969 12.9156C8.74096 14.0112 8.6666 15.1118 8.68147 16.2173L8.43359 24.204Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M10.2672 12.8908C10.2672 11.4878 10.2176 9.89145 10.6737 8.63222C10.9514 7.86875 11.5165 7.22921 12.1808 6.75824C13.326 5.95015 14.7737 5.62296 16.1766 5.71716C16.8558 5.76177 17.54 5.9006 18.12 6.25258C18.9231 6.73347 19.4586 7.56634 19.761 8.44879C20.0634 9.33124 20.2419 10.2682 20.3311 11.2002C20.3906 11.7902 20.4203 12.2116 20.4203 12.8015" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M18.508 12.8114C18.508 11.7257 18.3642 10.878 18.0817 9.83192C17.9131 9.21222 17.6652 8.56278 17.1348 8.19096C16.8125 7.96291 16.4209 7.86376 16.0342 7.7894C15.3104 7.65554 14.5072 7.62084 13.8826 8.00753C13.4364 8.28516 13.02 8.67186 12.7919 9.13788C12.2069 10.3227 12.1524 11.5621 12.1821 12.9156" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M15.7259 16.6685C15.7904 18.1111 15.721 19.5637 15.5078 20.9915" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>
+                        </div>
+                        <div class="text-left">
+                          <p>${transaction.attributes.description}</p>
+                          <small class="text-gray-600">${transaction.attributes.message || ''}</small>
+                        </div>
+                        <div class="ml-auto text-right">
+                          <div class="text-lg">${transaction.attributes.amount.value.startsWith('-') ? `-$${transaction.attributes.amount.value.substring(1)}` : `<span style="color: #00bc83">+$${transaction.attributes.amount.value}</span>`}</div>
+                          ${transaction.attributes.foreignAmount ? `<small class="text-gray-600">${transaction.attributes.foreignAmount.value} ${transaction.attributes.foreignAmount.currencyCode}</small>` : ''}
+                          ${transaction.attributes.status === 'HELD' ? `<div class="mt-2 bg-gray-800 text-white text-xxs font-medium tracking-wide rounded py-1 px-1">PENDING</div>` : ''}
+                        </div>
+                      </div>
+
+                      <hr class="border-gray-200" />
+
+                      <div class="flex items-center text-sm">
+                        <p class="text-gray-600">${transaction.attributes.amount.valueInBaseUnits < 0 ? 'Paid on' : 'Received'}</p>
+                        <p class="ml-auto">${new Date(transaction.attributes.createdAt).toLocaleString()}</p>
+                      </div>
+
+                      ${transaction.attributes.rawText ? `
+                        <hr class="border-gray-200" />
+                        <div class="flex items-center text-sm">
+                          <p class="text-gray-600 font-mono text-xs tracking-wider">${transaction.attributes.rawText}</p>
+                        </div>
+                      ` : ''}
+                    </div>
+                  `;
+                  transactionDetailsPanel.classList.add('open');
+                  mainContent.classList.add('blur-background');
+                });
+
+                transactionList.appendChild(item);
+              });
+            }
+          } else {
+            transactionList.innerHTML = '<p>No transactions found for this account.</p>';
+          }
+
+          // Show transactions section
+          transactionsSection.style.display = 'block';
+        });
+      });
+
+      
+      const toastContainer = document.getElementById('toast-container');
+
+      const showToast = (message) => {
+        const toast = document.createElement('div');
+        toast.classList.add('toast');
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 100);
+
+        toast.addEventListener('click', () => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        });
+      };
+
+      
+      setInterval(async () => {
+        const response = await fetch('/api/events');
+        const { event } = await response.json();
+        if (event) {
+          showToast(`New event: ${event}`);
+          // Refresh transactions if a transaction was created
+          if (event === 'TRANSACTION_CREATED' && currentAccountId) {
+            const card = document.querySelector(`.card[data-account-id="${currentAccountId}"]`);
+            card.click();
+          }
+        }
+      }, 5000);
+
+      
+      const balanceToggleBtn = document.getElementById('balance-toggle-btn');
+      const eyeOpenIcon = document.getElementById('eye-open');
+      const eyeClosedIcon = document.getElementById('eye-closed');
+      let isBlurred = true;
+
+      balanceToggleBtn.addEventListener('click', () => {
+        isBlurred = !isBlurred;
+        const balanceAmounts = document.querySelectorAll('.balance-amount');
+        balanceAmounts.forEach(span => {
+          if (isBlurred) {
+            span.classList.add('blurred');
+          } else {
+            span.classList.remove('blurred');
+          }
+        });
+
+        if (isBlurred) {
+          eyeOpenIcon.style.display = 'block';
+          eyeClosedIcon.style.display = 'none';
+        } else {
+          eyeOpenIcon.style.display = 'none';
+          eyeClosedIcon.style.display = 'block';
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!transactionDetailsPanel.contains(event.target) && !event.target.closest('.transaction-item')) {
+          transactionDetailsPanel.classList.remove('open');
+          mainContent.classList.remove('blur-background');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

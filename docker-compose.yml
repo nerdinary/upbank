@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  up-web-app:
+    container_name: up-web-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - WEBHOOK_URL=https://upbank.your-domain.com/api/webhooks # IMPORTANT: Replace with your actual public URL
+    networks:
+      - web
+    restart: always
+
+networks:
+  web:
+    external: true
