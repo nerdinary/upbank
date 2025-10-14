@@ -10,63 +10,34 @@ router.get('/', (req, res) => {
   res.render('intro', { title: 'Unofficial Up Web' });
 });
 
-// GET login page
-router.get('/login', (req, res) => {
-  res.render('login', { title: 'Login' });
-});
 
-// POST login
-router.post('/login', async (req, res) => {
-  const { apiKey } = req.body;
-  if (!apiKey) {
-    return res.render('login', { error: 'API key is required' });
-  }
+// GET oauth callback
+router.get('/oauth/callback', async (req, res) => {
+  const { code } = req.query;
 
   try {
-    // Test the API key
-    await axios.get(`${UP_API_BASE_URL}/util/ping`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
+    const response = await axios.post('https://api.up.com.au/oauth/token', {
+      grant_type: 'authorization_code',
+      client_id: process.env.UP_CLIENT_ID, // IMPORTANT: Set these in your environment
+      client_secret: process.env.UP_CLIENT_SECRET, // IMPORTANT: Set these in your environment
+      redirect_uri: process.env.UP_REDIRECT_URI, // IMPORTANT: Set these in your environment
+      code,
     });
 
-    req.session.apiKey = apiKey;
-
-    // Delete all existing webhooks
-    const { data: { data: webhooks } } = await axios.get(`${UP_API_BASE_URL}/webhooks`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-    for (const webhook of webhooks) {
-      await axios.delete(`${UP_API_BASE_URL}/webhooks/${webhook.id}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
-      });
-    }
-
-    // Create a new webhook
-    const webhookUrl = process.env.WEBHOOK_URL || 'https://example.com/api/webhooks'; 
-    const { data: { data: newWebhook } } = await axios.post(`${UP_API_BASE_URL}/webhooks`, {
-      data: {
-        attributes: {
-          url: webhookUrl,
-          description: 'Up Banking Web App',
-        },
-      },
-    }, {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-
-    req.session.webhookId = newWebhook.id;
-    req.session.webhookSecret = newWebhook.attributes.secretKey;
+    req.session.accessToken = response.data.access_token;
+    req.session.refreshToken = response.data.refresh_token;
 
     res.redirect('/dashboard');
   } catch (error) {
-    console.error(error);
-    res.render('login', { error: 'Invalid API key' });
+    console.error('OAuth callback error:', error);
+    res.render('error', { error: 'Could not exchange authorization code for token' });
   }
 });
 
 
 // Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
-  if (req.session.apiKey) {
+  if (req.session.accessToken) {
     return next();
   }
   res.redirect('/');
@@ -76,7 +47,7 @@ function isAuthenticated(req, res, next) {
 router.get('/dashboard', isAuthenticated, async (req, res) => {
   try {
     const { data: { data: accounts } } = await axios.get(`${UP_API_BASE_URL}/accounts`, {
-      headers: { Authorization: `Bearer ${req.session.apiKey}` },
+      headers: { Authorization: `Bearer ${req.session.accessToken}` },
     });
 
     res.render('index', { title: 'Dashboard', accounts });
@@ -91,14 +62,19 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
 router.get('/api/accounts/:id/transactions', isAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
-    const { data: { data: transactions } } = await axios.get(`${UP_API_BASE_URL}/accounts/${id}/transactions`, {
-      headers: { Authorization: `Bearer ${req.session.apiKey}` },
-    });
+    const [transactionsResponse, categoriesResponse] = await Promise.all([
+      axios.get(`${UP_API_BASE_URL}/accounts/${id}/transactions`, {
+        headers: { Authorization: `Bearer ${req.session.accessToken}` },
+      }),
+      axios.get(`${UP_API_BASE_URL}/categories`, {
+        headers: { Authorization: `Bearer ${req.session.accessToken}` },
+      }),
+    ]);
 
-    res.json({ transactions });
+    res.json({ transactions: transactionsResponse.data.data, categories: categoriesResponse.data.data });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Could not fetch transactions for the account' });
+    res.status(500).json({ error: 'Could not fetch transactions or categories for the account' });
   }
 });
 
@@ -127,7 +103,7 @@ router.get('/logout', async (req, res) => {
   try {
     if (req.session.webhookId) {
       await axios.delete(`${UP_API_BASE_URL}/webhooks/${req.session.webhookId}`, {
-        headers: { Authorization: `Bearer ${req.session.apiKey}` },
+        headers: { Authorization: `Bearer ${req.session.accessToken}` },
       });
     }
   } catch (error) {
