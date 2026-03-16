@@ -4,7 +4,6 @@
 <head>
   <title>Unofficial Up Web</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="login-page">
   <div class="login-container">
@@ -20,9 +19,13 @@
       <br />
       <br />
       <br />
-      <a href="https://api.up.com.au/oauth/authorize?client_id=YOUR_CLIENT_ID&response_type=code&scope=transactions%20accounts" class="agree-button">
-        <div class="text-center text-gray-900">Login with Up</div>
-      </a>
+      <form action="/login" method="POST" class="login-form">
+        <input type="password" name="accessToken" placeholder="Enter Personal Access Token" required class="token-input">
+        <button type="submit" class="agree-button">
+          <div class="text-center text-gray-900">Login with Up</div>
+        </button>
+      </form>
+      <p class="token-help">Get your token from the Up app or <a href="https://api.up.com.au" target="_blank">api.up.com.au</a></p>
     </div>
   </div>
 </body>

@@ -7,30 +7,70 @@ const UP_API_BASE_URL = 'https://api.up.com.au/api/v1';
 
 // GET intro page
 router.get('/', (req, res) => {
+  if (req.session.accessToken) {
+    return res.redirect('/dashboard');
+  }
   res.render('intro', { title: 'Unofficial Up Web' });
 });
 
 
-// GET oauth callback
-router.get('/oauth/callback', async (req, res) => {
-  const { code } = req.query;
+// POST login
+router.post('/login', async (req, res) => {
+  const { accessToken } = req.body;
+
+  if (!accessToken) {
+    return res.render('intro', { title: 'Unofficial Up Web', error: 'Access token is required' });
+  }
 
   try {
-    const response = await axios.post('https://api.up.com.au/oauth/token', {
-      grant_type: 'authorization_code',
-      client_id: process.env.UP_CLIENT_ID, // IMPORTANT: Set these in your environment
-      client_secret: process.env.UP_CLIENT_SECRET, // IMPORTANT: Set these in your environment
-      redirect_uri: process.env.UP_REDIRECT_URI, // IMPORTANT: Set these in your environment
-      code,
+    // Validate the token
+    await axios.get(`${UP_API_BASE_URL}/util/ping`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    req.session.accessToken = response.data.access_token;
-    req.session.refreshToken = response.data.refresh_token;
+    req.session.accessToken = accessToken;
+
+    // Webhook management (as described in README)
+    if (process.env.WEBHOOK_URL) {
+      try {
+        // 1. Fetch existing webhooks
+        const { data: { data: webhooks } } = await axios.get(`${UP_API_BASE_URL}/webhooks`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        // 2. Delete existing webhooks pointing to the same URL
+        for (const webhook of webhooks) {
+          if (webhook.attributes.url === process.env.WEBHOOK_URL) {
+            await axios.delete(`${UP_API_BASE_URL}/webhooks/${webhook.id}`, {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+          }
+        }
+
+        // 3. Register new webhook
+        const response = await axios.post(`${UP_API_BASE_URL}/webhooks`, {
+          data: {
+            attributes: {
+              url: process.env.WEBHOOK_URL,
+              description: 'Up Web App Webhook'
+            }
+          }
+        }, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        req.session.webhookId = response.data.data.id;
+        console.log(`Registered webhook: ${req.session.webhookId}`);
+      } catch (webhookError) {
+        console.error('Webhook management error:', webhookError.response ? webhookError.response.data : webhookError.message);
+        // We don't fail the login if webhooks fail, but we log it
+      }
+    }
 
     res.redirect('/dashboard');
   } catch (error) {
-    console.error('OAuth callback error:', error);
-    res.render('error', { error: 'Could not exchange authorization code for token' });
+    console.error('Login error:', error.response ? error.response.data : error.message);
+    res.render('error', { error: 'Invalid access token. Please check and try again.' });
   }
 });
 

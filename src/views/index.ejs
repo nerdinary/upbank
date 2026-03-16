@@ -3,7 +3,6 @@
 <head>
   <title><%= title %></title>
   <link rel="stylesheet" href="/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -74,17 +73,25 @@
       const panelContent = document.getElementById('panel-content');
 
       let transactionsData = [];
+      let currentAccountId = null;
 
       accountCards.forEach(card => {
         card.addEventListener('click', async () => {
+          const accountId = card.dataset.accountId;
+          currentAccountId = accountId;
 
           // Remove selected class from all cards
           accountCards.forEach(c => c.classList.remove('selected'));
 
-          // Add selected class to clicked card
-          card.classList.add('selected');
+          // If in privacy mode, re-blur all other cards
+          if (isBlurred) {
+            accountCards.forEach(c => c.querySelector('.balance-amount').classList.add('blurred'));
+          }
 
-          const accountId = card.dataset.accountId;
+          // Add selected class to clicked card and ensure its balance is unblurred
+          card.classList.add('selected');
+          card.querySelector('.balance-amount').classList.remove('blurred');
+
           const accountName = card.querySelector('h3').textContent;
 
           // Fetch transactions
