@@ -13,8 +13,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-ENV WEBHOOK_URL=http://localhost:3000/api/webhooks
-
 # Make port 3000 available to the world outside this container
 EXPOSE 3000
 
