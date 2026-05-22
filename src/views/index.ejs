@@ -425,15 +425,49 @@
 
       const toastContainer = document.getElementById('toast-container');
 
-      function showToast(message) {
+      function showToast(label, description, amount) {
         const toast = document.createElement('div');
         toast.classList.add('toast');
-        toast.textContent = message;
+
+        if (description) {
+          const top = document.createElement('div');
+          top.classList.add('toast-label');
+          top.textContent = label;
+
+          const bottom = document.createElement('div');
+          bottom.classList.add('toast-detail');
+          const debit = amount && amount.startsWith('-');
+          bottom.innerHTML = `<span>${description}</span><span class="toast-amount ${debit ? 'debit' : 'credit'}">${amount ? (debit ? `-$${fmt(amount.substring(1))}` : `+$${fmt(amount)}`) : ''}</span>`;
+
+          toast.appendChild(top);
+          toast.appendChild(bottom);
+        } else {
+          toast.textContent = label;
+        }
+
         toastContainer.appendChild(toast);
         setTimeout(() => toast.classList.add('show'), 80);
-        toast.addEventListener('click', () => {
+
+        const dismiss = () => {
           toast.classList.remove('show');
           setTimeout(() => toast.remove(), 280);
+        };
+        setTimeout(dismiss, 4000);
+        toast.addEventListener('click', dismiss);
+      }
+
+      // ── balance refresh ────────────────────────────────────────────────────
+
+      async function refreshBalances() {
+        const response = await fetch('/api/accounts');
+        if (handleFetchError(response)) return;
+        const { accounts } = await response.json();
+        accounts.forEach(account => {
+          const card = document.querySelector(`.card[data-account-id="${account.id}"]`);
+          if (card) {
+            card.querySelector('.balance-amount').textContent =
+              parseFloat(account.attributes.balance.value).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          }
         });
       }
 
@@ -444,15 +478,26 @@
         'TRANSACTION_DELETED', 'TRANSACTION_CATEGORY_CHANGE', 'TRANSACTION_NOTE_CHANGE',
       ]);
 
+      const EVENT_LABELS = {
+        TRANSACTION_CREATED:         'New transaction',
+        TRANSACTION_SETTLED:         'Transaction settled',
+        TRANSACTION_DELETED:         'Transaction deleted',
+        TRANSACTION_CATEGORY_CHANGE: 'Category updated',
+        TRANSACTION_NOTE_CHANGE:     'Note updated',
+      };
+
       setInterval(async () => {
         const response = await fetch('/api/events');
         if (handleFetchError(response)) return;
         const { events } = await response.json();
         for (const event of events) {
-          const label = event.replace(/_/g,' ').toLowerCase().replace(/^\w/, c => c.toUpperCase());
-          showToast(label);
-          if (RELOAD_EVENTS.has(event) && currentAccountId) {
-            await fetchAndRenderTransactions(currentAccountId, currentFilters());
+          const label = EVENT_LABELS[event.type] || event.type.replace(/_/g,' ').toLowerCase().replace(/^\w/, c => c.toUpperCase());
+          showToast(label, event.description, event.amount);
+          if (RELOAD_EVENTS.has(event.type) && currentAccountId) {
+            await Promise.all([
+              fetchAndRenderTransactions(currentAccountId, currentFilters()),
+              refreshBalances(),
+            ]);
           }
         }
       }, 5000);

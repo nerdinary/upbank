@@ -654,6 +654,34 @@ main.blur-background {
 }
 .toast.show { opacity: 1; transform: translateX(0); }
 
+.toast-label {
+  font-size: 0.7rem;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.toast-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--t1);
+}
+
+.toast-amount {
+  font-family: var(--fm);
+  font-size: 0.82rem;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.toast-amount.debit  { color: var(--t1); }
+.toast-amount.credit { color: var(--green); }
+
 /* ─── login ──────────────────────────────────────────────────── */
 body.login-page {
   display: flex;

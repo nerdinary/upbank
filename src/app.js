@@ -8,9 +8,10 @@ const app = express();
 
 // Session middleware
 app.use(session({
-  secret: 'your_secret_key', // In a real app, use an environment variable
+  secret: process.env.SESSION_SECRET || 'your_secret_key',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  cookie: { maxAge: 10 * 60 * 1000 }, // 10 minutes
 }));
 
 // View engine setup

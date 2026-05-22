@@ -46,6 +46,7 @@ router.post('/login', async (req, res) => {
     });
 
     req.session.accessToken = accessToken;
+    userAccessToken = accessToken;
 
     const webhookUrl = process.env.WEBHOOK_URL;
     const isPublicHttps = webhookUrl && (() => {
@@ -111,6 +112,20 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
     if (error.response && error.response.status === 401) return res.redirect('/?error=session_expired');
     console.error(error);
     res.render('error', { error: 'Could not fetch accounts' });
+  }
+});
+
+
+// GET fresh account balances for sidebar refresh
+router.get('/api/accounts', isAuthenticated, async (req, res) => {
+  try {
+    const accounts = await fetchAllPages(`${UP_API_BASE_URL}/accounts`, req.session.accessToken);
+    res.json({ accounts });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ error: 'session_expired' });
+    }
+    res.status(500).json({ error: 'Could not fetch accounts' });
   }
 });
 
@@ -247,14 +262,14 @@ router.patch('/api/transactions/:id/category', isAuthenticated, async (req, res)
 });
 
 
-// Module-level state: webhook secret (set at registration) and event queue
-// These are module-scoped because Up's servers POST to /api/webhooks without a browser session
+// Module-level state — scoped here because Up's servers POST to /api/webhooks without a browser session
 let webhookSecret = null;
+let userAccessToken = null;
 const EVENT_QUEUE_MAX = 20;
 const eventQueue = [];
 
 // POST webhook — receives events from Up Banking
-router.post('/api/webhooks', (req, res) => {
+router.post('/api/webhooks', async (req, res) => {
   // Verify HMAC signature if we have a secret stored.
   // Up signs the raw body with SHA-256 HMAC; signature is in X-Up-Authenticity-Signature.
   // webhookSecret is module-level because this request comes from Up's servers, not a browser.
@@ -277,12 +292,27 @@ router.post('/api/webhooks', (req, res) => {
   }
 
   const { eventType } = req.body.data.attributes;
+  const transactionId = req.body.data.relationships?.transaction?.data?.id;
 
-  // Ignore PING test events; queue everything else
   if (eventType !== 'PING') {
+    const event = { type: eventType };
+
+    if (transactionId && userAccessToken) {
+      try {
+        const { data } = await axios.get(`${UP_API_BASE_URL}/transactions/${transactionId}`, {
+          headers: { Authorization: `Bearer ${userAccessToken}` },
+        });
+        const tx = data.data.attributes;
+        event.description = tx.description;
+        event.amount = tx.amount.value;
+      } catch (e) {
+        console.error('Could not fetch transaction for webhook event:', e.message);
+      }
+    }
+
     if (eventQueue.length >= EVENT_QUEUE_MAX) eventQueue.shift();
-    eventQueue.push(eventType);
-    console.log(`Queued webhook event: ${eventType}`);
+    eventQueue.push(event);
+    console.log(`Queued webhook event: ${eventType}`, event.description || '');
   }
 
   res.sendStatus(200);
@@ -307,6 +337,7 @@ router.get('/logout', async (req, res) => {
     console.error('Error deleting webhook:', error);
   }
 
+  userAccessToken = null;
   req.session.destroy(err => {
     if (err) {
       return res.redirect('/dashboard');
