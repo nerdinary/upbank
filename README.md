@@ -35,8 +35,8 @@ An unofficial web application to view your Up Banking account details and transa
 1. **Clone the repository:**
 
     ```bash
-    git clone <your-repo-url>
-    cd up-banking-web-app
+    git clone https://github.com/nerdinary/upbank
+    cd upbank
     ```
 
 2. **Build the Docker image:**
