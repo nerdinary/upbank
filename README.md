@@ -2,6 +2,12 @@
 
 An unofficial web application to view your Up Banking account details and transactions, with real-time updates via webhooks.
 
+## Screenshots
+
+![Login](docs/login.png)
+
+![Dashboard](docs/transactions.png)
+
 ## Features
 
 - Secure login using your Up Banking Personal Access Token
