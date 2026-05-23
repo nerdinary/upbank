@@ -803,3 +803,90 @@ body.login-page {
 .token-help { margin-top: 1.5rem; font-size: 0.72rem; color: var(--t3); line-height: 1.7; }
 .token-help a { color: var(--up); text-decoration: none; }
 .token-help a:hover { text-decoration: underline; }
+
+/* ─── mobile drawer ──────────────────────────────────────────── */
+#accounts-fab {
+  display: none;
+}
+
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 199;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s var(--ease);
+    box-shadow: none;
+  }
+
+  .sidebar-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 8px 0 40px rgba(0,0,0,0.6);
+  }
+
+  .sidebar-open #sidebar-overlay {
+    display: block;
+  }
+
+  #accounts-fab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.25rem;
+    z-index: 150;
+    background: var(--up);
+    color: #000;
+    border: none;
+    border-radius: 999px;
+    padding: 0.72rem 1.2rem;
+    font-family: var(--fb);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(255,122,0,0.45);
+    transition: background 0.15s, transform 0.15s, opacity 0.2s;
+  }
+  #accounts-fab svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #accounts-fab:hover { background: var(--up2); }
+  #accounts-fab:active { transform: scale(0.97); }
+
+  .sidebar-open #accounts-fab {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  main {
+    padding: 1.5rem 1.25rem 6rem;
+  }
+
+  #transactions-section,
+  .empty-state {
+    max-width: 100%;
+  }
+
+  .filter-bar {
+    gap: 0.35rem;
+  }
+
+  .filter-select,
+  .filter-input {
+    font-size: 0.82rem;
+    padding: 0.35rem 0.55rem;
+  }
+
+  .filter-select { padding-right: 22px; }
+}

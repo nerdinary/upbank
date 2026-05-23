@@ -12,6 +12,8 @@
 <body>
   <div class="app">
 
+    <div id="sidebar-overlay"></div>
+
     <!-- sidebar -->
     <aside class="sidebar">
       <div class="sidebar-brand">
@@ -91,6 +93,14 @@
 
   </div><!-- /.app -->
 
+  <button id="accounts-fab" aria-label="Open accounts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+      <line x1="1" y1="10" x2="23" y2="10"></line>
+    </svg>
+    Accounts
+  </button>
+
   <div id="toast-container"></div>
 
   <div id="transaction-details-panel" class="slide-out-panel">
@@ -100,6 +110,9 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const mainContent = document.querySelector('main');
+      const appShell = document.querySelector('.app');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      const accountsFab = document.getElementById('accounts-fab');
       const emptyState = document.getElementById('empty-state');
       const accountCards = document.querySelectorAll('.card[data-account-id]');
       const transactionsSection = document.getElementById('transactions-section');
@@ -360,6 +373,7 @@
           card.classList.add('selected');
           card.querySelector('.balance-amount').classList.remove('blurred');
 
+          appShell.classList.remove('sidebar-open');
           transactionsHeading.textContent = currentAccountName;
           await fetchAndRenderTransactions(accountId, currentFilters());
         });
@@ -518,6 +532,11 @@
         eyeOpenIcon.style.display   = isBlurred ? 'block' : 'none';
         eyeClosedIcon.style.display = isBlurred ? 'none'  : 'block';
       });
+
+      // ── mobile sidebar drawer ─────────────────────────────────────────────
+
+      accountsFab.addEventListener('click', () => appShell.classList.add('sidebar-open'));
+      sidebarOverlay.addEventListener('click', () => appShell.classList.remove('sidebar-open'));
 
       // ── close panel ───────────────────────────────────────────────────────
 
