@@ -175,6 +175,11 @@ router.get('/api/accounts/:id/transactions', isAuthenticated, async (req, res) =
 router.get('/api/transactions/next', isAuthenticated, async (req, res) => {
   const { cursor } = req.query;
   if (!cursor) return res.status(400).json({ error: 'cursor required' });
+  // The cursor is fetched with the user's bearer token, so it must point back at Up's API
+  // and nowhere else — otherwise a crafted link could leak the token to another host.
+  if (typeof cursor !== 'string' || !cursor.startsWith(`${UP_API_BASE_URL}/`)) {
+    return res.status(400).json({ error: 'invalid cursor' });
+  }
   try {
     const { data } = await axios.get(cursor, {
       headers: { Authorization: `Bearer ${req.session.accessToken}` },
@@ -188,6 +193,23 @@ router.get('/api/transactions/next', isAuthenticated, async (req, res) => {
       return res.status(401).json({ error: 'session_expired' });
     }
     res.status(500).json({ error: 'Could not fetch transactions' });
+  }
+});
+
+
+// GET a transaction attachment (receipt). fileURL is a short-lived signed link.
+router.get('/api/attachments/:id', isAuthenticated, async (req, res) => {
+  try {
+    const { data } = await axios.get(`${UP_API_BASE_URL}/attachments/${encodeURIComponent(req.params.id)}`, {
+      headers: { Authorization: `Bearer ${req.session.accessToken}` },
+    });
+    const { fileURL, fileURLExpiresAt, fileContentType } = data.data.attributes;
+    res.json({ fileURL, fileURLExpiresAt, fileContentType });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ error: 'session_expired' });
+    }
+    res.status(error.response?.status === 404 ? 404 : 500).json({ error: 'Could not fetch attachment' });
   }
 });
 
