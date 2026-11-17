@@ -43,8 +43,12 @@
 
         <div class="account-list">
           <% accounts.forEach((account, index) => { %>
-            <div class="card card-color-<%= (index % 5) + 1 %>" data-account-id="<%= account.id %>" data-ownership="<%= account.attributes.ownershipType %>">
-              <div class="card-badge"><%= account.attributes.accountType.replace('_', ' ') %></div>
+            <% const typeLabel = { TRANSACTIONAL: 'Spending', SAVER: 'Saver', HOME_LOAN: 'Home loan' }[account.attributes.accountType] || account.attributes.accountType; %>
+            <div class="card card-type-<%= account.attributes.accountType %><%= account.attributes.ownershipType === 'JOINT' ? ' card-joint' : '' %>" tabindex="0" data-account-id="<%= account.id %>" data-ownership="<%= account.attributes.ownershipType %>">
+              <% const badge = account.attributes.ownershipType === 'JOINT' ? `2Up ${typeLabel.toLowerCase()}` : typeLabel; %>
+              <% if (!account.attributes.displayName.toLowerCase().includes(typeLabel.toLowerCase())) { %>
+              <div class="card-badge"><%= badge %></div>
+              <% } %>
               <div class="card-name"><%= account.attributes.displayName %></div>
               <div class="card-balance-row">
                 <span class="balance-amount"><%= parseFloat(account.attributes.balance.value).toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></span>
@@ -63,8 +67,7 @@
     <!-- main -->
     <main>
       <div id="empty-state" class="empty-state">
-        <p class="empty-eyebrow">Up Web</p>
-        <p class="empty-headline">Select an account<br>to view <em>transactions</em></p>
+        <p class="empty-headline">Choose an account to see its transactions</p>
       </div>
 
       <section id="transactions-section" style="display:none;">
@@ -417,6 +420,9 @@
       // ── account card clicks ───────────────────────────────────────────────
 
       accountCards.forEach(card => {
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+        });
         card.addEventListener('click', async () => {
           const accountId = card.dataset.accountId;
           currentAccountId = accountId;

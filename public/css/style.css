@@ -1,23 +1,33 @@
 /* ─── tokens ─────────────────────────────────────────────────── */
 :root {
-  --ink:        #07080F;
-  --surface:    #0C0D16;
-  --lift:       #12141F;
-  --raise:      #191C2A;
-  --line:       #22253A;
-  --line-b:     #2E3249;
+  /* warm plum-slate ground, layered surfaces */
+  --ink:        #17141C;
+  --surface:    #1D1923;
+  --lift:       #241F2B;
+  --raise:      #2C2634;
+  --line:       #2E2837;
+  --line-b:     #3B3445;
 
-  --t1:         #EDEAF2;
-  --t2:         #A6A9BE;
-  --t3:         #74789A;
+  /* warm paper text */
+  --t1:         #F3EDE6;
+  --t2:         #B6ADB9;
+  --t3:         #877E8D;
 
-  --up:         #FF7A00;
-  --up2:        #FF9A3C;
-  --up-glow:    rgba(255,122,0,0.22);
-  --up-dim:     rgba(255,122,0,0.06);
+  /* Up coral (from the round-up mark) — reserved for selection, primary action, focus */
+  --up:         #FF8A6B;
+  --up2:        #FFA88F;
+  --up-glow:    rgba(255,138,107,0.22);
+  --up-dim:     rgba(255,138,107,0.08);
 
-  --green:      #0ECC7A;
-  --red:        #FF4560;
+  --green:      #8FD4A6;
+  --red:        #F08A8A;
+  --amber:      #E8C170;
+
+  /* account-type stripes */
+  --acct-spend: var(--up);
+  --acct-saver: #8FB4F0;
+  --acct-loan:  #C9A8EE;
+  --acct-joint: var(--amber);
 
   /* one readable sans everywhere; amounts use tabular figures instead of a mono face */
   --fd: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -116,11 +126,9 @@ body {
 }
 
 .sidebar-label {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.85rem;
   color: var(--t2);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .balance-toggle-btn {
@@ -154,56 +162,52 @@ body {
 }
 
 .card {
+  --acct: var(--t3);
+  background: var(--lift);
+  border: 1px solid var(--line);
   border-radius: var(--r);
-  padding: 1rem 1.1rem 0.9rem;
+  padding: 0.85rem 1rem 0.85rem 1.15rem;
   cursor: pointer;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s;
   position: relative;
   overflow: hidden;
-  border: 1.5px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.85rem; bottom: 0.85rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--acct);
 }
+
+.card:hover { background: var(--raise); }
 
 .card.selected {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+  background: var(--raise);
+  border-color: color-mix(in srgb, var(--acct) 55%, transparent);
 }
 
-.card-color-1 { background: linear-gradient(140deg, #FF7A00, #CC4E00); }
-.card-color-2 { background: linear-gradient(140deg, #F5C000, #D49000); }
-.card-color-3 { background: linear-gradient(140deg, #00CCA8, #009980); }
-.card-color-4 { background: linear-gradient(140deg, #FF5A5F, #CC2F35); }
-.card-color-5 { background: linear-gradient(140deg, #8B5CF6, #6D28D9); }
+.card:focus-visible { outline: 2px solid var(--up); outline-offset: 2px; }
 
-.card-color-1.selected { border-color: rgba(255,175,90,0.65); }
-.card-color-2.selected { border-color: rgba(255,225,80,0.65); }
-.card-color-3.selected { border-color: rgba(0,230,185,0.65); }
-.card-color-4.selected { border-color: rgba(255,120,120,0.65); }
-.card-color-5.selected { border-color: rgba(185,140,255,0.65); }
+.card-type-TRANSACTIONAL { --acct: var(--acct-spend); }
+.card-type-SAVER         { --acct: var(--acct-saver); }
+.card-type-HOME_LOAN     { --acct: var(--acct-loan); }
+.card.card-joint         { --acct: var(--acct-joint); }
 
 .card-badge {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: rgba(0,0,0,0.22);
-  color: rgba(0,0,0,0.65);
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-  display: inline-block;
-  margin-bottom: 0.45rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--t2);
+  font-weight: 500;
+  margin-bottom: 0.1rem;
 }
 
 .card-name {
   font-size: 1rem;
   font-weight: 600;
-  color: rgba(0,0,0,0.85);
-  letter-spacing: -0.01em;
-  margin-bottom: 0.5rem;
+  color: var(--t1);
+  margin-bottom: 0.35rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -213,19 +217,18 @@ body {
 
 .balance-amount {
   font-family: var(--fm);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: rgba(0,0,0,0.9);
-  letter-spacing: -0.01em;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--t1);
+  letter-spacing: -0.015em;
   transition: filter 0.35s;
 }
 .balance-amount.blurred { filter: blur(7px); }
 
 .balance-currency {
   font-size: 0.75rem;
-  color: rgba(0,0,0,0.55);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  color: var(--t3);
+  font-weight: 500;
 }
 
 /* ─── main ───────────────────────────────────────────────────── */
@@ -275,17 +278,15 @@ main.blur-background {
 
 .empty-headline {
   font-family: var(--fd);
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 600;
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+  max-width: 22ch;
   color: var(--t2);
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
-.empty-headline em {
-  font-style: normal;
-  color: var(--up);
-}
+
 
 /* ─── tx header ──────────────────────────────────────────────── */
 .tx-header {
@@ -332,7 +333,7 @@ main.blur-background {
 }
 
 .filter-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%233D4058'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23877E8D'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   padding-right: 24px;
@@ -361,7 +362,7 @@ main.blur-background {
   transition: all 0.15s;
 }
 
-.filter-btn-primary { background: var(--up); color: #000; }
+.filter-btn-primary { background: var(--up); color: #22140F; }
 .filter-btn-primary:hover { background: var(--up2); }
 
 .filter-btn-secondary {
@@ -375,11 +376,9 @@ main.blur-background {
 .transaction-list { display: flex; flex-direction: column; }
 
 .transaction-date-header {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.9rem;
   color: var(--t2);
-  font-weight: 700;
+  font-weight: 600;
   padding: 1.5rem 0 0.55rem;
   border-bottom: 1px solid var(--line);
 }
@@ -410,7 +409,7 @@ main.blur-background {
   flex-shrink: 0;
   border: 1px solid var(--line-b);
 }
-.transaction-icon svg { width: 16px; height: 16px; color: var(--up); }
+.transaction-icon svg { width: 16px; height: 16px; color: var(--t2); }
 
 .transaction-details { flex: 1; min-width: 0; }
 
@@ -446,9 +445,9 @@ main.blur-background {
 .tag-row { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.28rem; }
 
 .tag-chip {
-  background: var(--up-dim);
-  border: 1px solid rgba(255,122,0,0.14);
-  color: var(--up2);
+  background: var(--raise);
+  border: 1px solid var(--line-b);
+  color: var(--t2);
   font-size: 0.8rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
@@ -478,18 +477,15 @@ main.blur-background {
 
 .status-badge {
   display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 0.1rem 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.05rem 0.45rem;
   border-radius: 4px;
 }
 
 .status-held {
-  background: rgba(255,185,0,0.09);
-  color: #FFB800;
-  border: 1px solid rgba(255,185,0,0.18);
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+  color: var(--amber);
 }
 
 /* ─── load more ──────────────────────────────────────────────── */
@@ -718,7 +714,7 @@ body.login-page {
 .login-glow {
   position: fixed;
   width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(255,122,0,0.07) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(255,138,107,0.08) 0%, transparent 65%);
   border-radius: 50%;
   top: 50%; left: 50%;
   transform: translate(-50%, -58%);
@@ -763,7 +759,7 @@ body.login-page {
   line-height: 1;
   color: var(--t1);
 }
-.login-title em { font-style: normal; color: var(--up); }
+.login-title em { font-style: normal; }
 
 .login-sub {
   font-size: 0.75rem;
@@ -776,8 +772,8 @@ body.login-page {
 .login-error {
   width: 100%;
   margin-bottom: 0.75rem;
-  background: rgba(255,69,96,0.06);
-  border: 1px solid rgba(255,69,96,0.18);
+  background: color-mix(in srgb, var(--red) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--red) 25%, transparent);
   border-radius: 7px;
   padding: 0.6rem 0.9rem;
   font-size: 0.9rem;
@@ -808,7 +804,7 @@ body.login-page {
 .login-btn {
   background: var(--up); border: none; border-radius: 9px;
   padding: 0.82rem; font-family: var(--fb); font-size: 1rem;
-  font-weight: 700; color: #000; cursor: pointer;
+  font-weight: 700; color: #22140F; cursor: pointer;
   transition: background 0.15s, transform 0.1s;
 }
 .login-btn:hover { background: var(--up2); }
@@ -862,7 +858,7 @@ body.login-page {
     left: 1.25rem;
     z-index: 150;
     background: var(--up);
-    color: #000;
+    color: #22140F;
     border: none;
     border-radius: 999px;
     padding: 0.72rem 1.2rem;
@@ -870,7 +866,7 @@ body.login-page {
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(255,122,0,0.45);
+    box-shadow: 0 4px 20px rgba(255,138,107,0.35);
     transition: background 0.15s, transform 0.15s, opacity 0.2s;
   }
   #accounts-fab svg { width: 15px; height: 15px; flex-shrink: 0; }
